@@ -20,30 +20,29 @@
 
 ## 使用流程
 
+先自行安装 Docker Engine 和 Docker Compose v2。
+
 ```bash
+git clone https://github.com/hyizhou/zcode-docker.git
+cd zcode-docker
 docker compose up -d --build
 ```
 
-1. 启动容器。
-2. 在浏览器访问：
+1. 在浏览器访问：
 
 ```text
 http://<服务器IP>:6080/
 ```
 
-3. 使用默认 VNC 密码进入桌面：
+2. 使用 `VNC_PASSWORD` 指定的密码进入桌面。
 
-```text
-zcode123
-```
+3. 登录 ZCode 账户。
+4. 使用 ZCode 官方远程控制功能连接该设备。
+5. 在 ZCode 中添加项目。
+6. 之后通过 ZCode 官方远程控制进行开发。
+7. 关闭浏览器；完成 ZCode 官方远程控制配对后，通过宿主机防火墙、Docker 防火墙链或云安全组屏蔽 `6080` 端口，需要 VNC 备用时再临时放行。
 
-4. 登录 ZCode 账户。
-5. 使用 ZCode 官方远程控制功能连接该设备。
-6. 在 ZCode 中添加项目。
-7. 之后通过 ZCode 官方远程控制进行开发。
-8. 关闭浏览器；完成 ZCode 官方远程控制配对后，通过宿主机防火墙、Docker 防火墙链或云安全组屏蔽 `6080` 端口，需要 VNC 备用时再临时放行。
-
-部署前修改 `docker-compose.yml` 中的 VNC 密码：
+首次使用前修改 `docker-compose.yml` 中的 `VNC_PASSWORD`：
 
 ```yaml
 VNC_PASSWORD: "change-me"
@@ -79,8 +78,6 @@ docker compose build --no-cache
 docker compose up -d
 ```
 
-仓库不包含 ZCode 安装包；本地 `.deb` 也会被 `.dockerignore` 排除，不会进入构建上下文。
-
 ## 构建变量
 
 `APT_MIRROR_HOST`：Debian APT 镜像域名；需要更换镜像源时指定。
@@ -105,7 +102,6 @@ docker compose down
 - 必须修改默认 VNC 密码。
 - `/data` 中包含登录凭据和会话数据，不要随意共享。
 - 不建议把 `6080` 直接暴露到公网；公网访问建议放在反向代理、VPN 或防火墙之后，并启用 HTTPS。
-- 不要公开推送已构建镜像，因为镜像内包含 ZCode 官方程序；本项目适合开源 Docker 配置本身。
 
 ## 声明
 
