@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # ZCode Headless Server
 
 An unofficial Docker setup for running ZCode Desktop continuously on a server without a physical display. It is intended for long-running development tasks, so your own computer does not need to stay on.

@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # ZCode Headless Server
 
 非官方 Docker 包装，用于在无显示器服务器上长期运行 ZCode Desktop，承接 24 小时开发任务，不需要长时间打开自己的电脑。
