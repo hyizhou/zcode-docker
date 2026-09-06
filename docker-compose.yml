@@ -1,0 +1,25 @@
+name: zcode-webvnc
+
+services:
+  zcode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APT_MIRROR_HOST: ${APT_MIRROR_HOST:-mirrors.cloud.tencent.com}
+    image: zcode-webvnc:latest
+    container_name: zcode-webvnc
+    init: true
+    restart: unless-stopped
+    shm_size: 512m
+    environment:
+      VNC_PASSWORD: zcode123
+      ZCODE_NO_SANDBOX: "1"
+    ports:
+      - "6080:6080"
+    volumes:
+      - zcode-data:/data
+      - ./workspace:/workspace
+
+volumes:
+  zcode-data:
