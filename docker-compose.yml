@@ -15,6 +15,7 @@ services:
     environment:
       VNC_PASSWORD: zcode123
       ZCODE_NO_SANDBOX: "1"
+      EXTRA_APT_PACKAGES: ${EXTRA_APT_PACKAGES:-}
     ports:
       - "6080:6080"
     volumes:

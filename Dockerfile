@@ -18,21 +18,17 @@ RUN set -eux; \
       -e "s|http://deb.debian.org/debian-security|https://${APT_MIRROR_HOST}/debian-security|g" \
       /etc/apt/sources.list.d/debian.sources; \
     apt-get update; \
-    curl -fsSL https://zcode.z.ai/cn -o /tmp/zcode-release.html; \
-    url="$(grep -oE 'https://cdn-zcode\.z\.ai/zcode/electron/releases/[0-9]+(\.[0-9]+)+/linux-x64/ZCode-[0-9]+(\.[0-9]+)+-linux-x64\.deb' /tmp/zcode-release.html | sort -uV | tail -n 1)"; \
-    test -n "$url"; \
-    curl -fL "$url" -o /tmp/zcode.deb; \
     apt-get install -y --no-install-recommends \
       tzdata procps xvfb dbus dbus-x11 gnome-keyring gosu \
       x11vnc novnc websockify openbox surf \
+      git \
       fonts-wqy-zenhei fonts-noto-color-emoji \
       libasound2 libgbm1 \
-      /tmp/zcode.deb; \
-    chmod 4755 /opt/ZCode/chrome-sandbox; \
+      libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 \
+      xdg-utils libatspi2.0-0 libuuid1 libsecret-1-0; \
     groupadd --gid 1000 zcode; \
     useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash zcode; \
     install -d -o zcode -g zcode /data /workspace; \
-    rm -f /tmp/zcode.deb /tmp/zcode-release.html; \
     ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html; \
     ln -sf /usr/bin/surf /usr/local/bin/x-www-browser; \
     apt-get clean; \
@@ -43,7 +39,7 @@ COPY --chmod=0755 entrypoint.sh /usr/local/bin/zcode-entrypoint
 WORKDIR /workspace
 VOLUME ["/data"]
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=45s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10m --retries=3 \
   CMD pgrep -x zcode >/dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/zcode-entrypoint"]

@@ -6,7 +6,9 @@ An unofficial Docker setup for running ZCode Desktop continuously on a server wi
 
 ## Features
 
-- Automatically downloads the latest official Linux x64 ZCode `.deb` package
+- Does not embed ZCode in the image; downloads the latest official Linux x64 `.deb` package on first start
+- Includes `git` by default
+- Supports installing additional Debian packages at startup with an environment variable
 - Runs a virtual display with Xvfb
 - Runs the Openbox window manager
 - Supports ZCode's official remote-control feature
@@ -28,7 +30,10 @@ Install Docker Engine and Docker Compose v2 first.
 git clone https://github.com/hyizhou/zcode-docker.git
 cd zcode-docker
 docker compose up -d --build
+docker compose logs -f zcode
 ```
+
+On the first start, container logs show additional package installation, release-URL resolution, download progress, ZCode installation, and installer cleanup. The noVNC port becomes available after installation completes and the desktop services start.
 
 1. Open this address in a browser:
 
@@ -66,6 +71,7 @@ docker compose up -d
 ```
 
 Only `down -v` or manually deleting the named volume removes `/data`.
+The ZCode program is installed in the container's writable layer, not in `/data`. Recreating the container downloads and installs it again, while login state and configuration in `/data` remain available.
 
 ## Nightly free period
 
@@ -73,20 +79,30 @@ For paid GLM Coding Plan subscribers using GLM-5.3-Flash in ZCode, quota consump
 
 ## Updating ZCode
 
-The build parses the latest official Linux x64 package URL. Because Docker caches build layers, force a fresh version check with:
+Every new container resolves and installs the latest official Linux x64 package on its first start. ZCode is not upgraded automatically inside an already-running container. To update it, recreate the container:
 
 ```bash
-docker compose build --no-cache
-docker compose up -d
+docker compose up -d --force-recreate
 ```
 
-## Build variable
+Recreation downloads ZCode again; use `docker compose logs -f zcode` to follow the progress.
+
+## Build and runtime variables
 
 `APT_MIRROR_HOST`: Debian APT mirror hostname. Set it when you want to use another mirror.
 
 ```bash
 APT_MIRROR_HOST=mirrors.aliyun.com docker compose build --no-cache
 ```
+
+`EXTRA_APT_PACKAGES`: additional Debian packages to install when the container starts, separated by spaces or commas. By default, no extra packages are installed.
+
+```yaml
+environment:
+  EXTRA_APT_PACKAGES: "build-essential jq"
+```
+
+The entrypoint installs these packages as root, while ZCode and its AI terminal continue to run as an unprivileged user without sudo. Container recreation installs the same configured packages again.
 
 ## Common commands
 

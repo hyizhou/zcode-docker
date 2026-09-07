@@ -6,7 +6,9 @@
 
 ## 功能
 
-- 自动从 ZCode 官网获取最新 Linux x64 `.deb` 安装包
+- 镜像不内置 ZCode，首次启动时自动从官网获取最新 Linux x64 `.deb` 安装包
+- 默认内置 `git`
+- 支持通过环境变量在启动时安装额外 Debian 软件包
 - Xvfb 虚拟显示
 - Openbox 窗口管理器
 - 支持 ZCode 官方远程控制
@@ -28,7 +30,10 @@
 git clone https://github.com/hyizhou/zcode-docker.git
 cd zcode-docker
 docker compose up -d --build
+docker compose logs -f zcode
 ```
+
+首次启动的容器日志会显示额外软件包安装、解析下载地址、下载进度、安装和删除 ZCode 安装包的过程。noVNC 端口会在安装完成并启动桌面服务后可用。
 
 1. 在浏览器访问：
 
@@ -66,6 +71,7 @@ docker compose up -d
 ```
 
 只有执行 `down -v` 或手动删除 named volume 才会清除 `/data`。
+ZCode 程序安装在容器可写层中，不放在 `/data`。删除并重建容器后会重新下载安装；`/data` 中的登录态和配置仍会保留。
 
 ## 夜间免费时段
 
@@ -73,20 +79,30 @@ GLM Coding Plan 付费套餐用户在 ZCode 中使用 GLM-5.3-Flash 时，2026 �
 
 ## 更新 ZCode
 
-构建时会解析官网最新 Linux x64 安装包地址。由于 Docker 会缓存构建层，强制检查最新版本时使用：
+每次新容器首次启动都会解析官网最新 Linux x64 安装包地址并安装。已运行容器中的 ZCode 不会被自动升级；需要更新版本时，删除并重建容器：
 
 ```bash
-docker compose build --no-cache
-docker compose up -d
+docker compose up -d --force-recreate
 ```
 
-## 构建变量
+重建过程会重新下载 ZCode，可通过 `docker compose logs -f zcode` 查看进度。
+
+## 构建和运行变量
 
 `APT_MIRROR_HOST`：Debian APT 镜像域名；需要更换镜像源时指定。
 
 ```bash
 APT_MIRROR_HOST=mirrors.aliyun.com docker compose build --no-cache
 ```
+
+`EXTRA_APT_PACKAGES`：容器启动时需要额外安装的 Debian 软件包，使用空格或逗号分隔；默认不安装额外软件包。
+
+```yaml
+environment:
+  EXTRA_APT_PACKAGES: "build-essential jq"
+```
+
+这些包由入口脚本以 root 身份安装，ZCode 和 AI 终端仍以普通用户运行，不获得 sudo 权限。容器重建后会按同一配置重新安装。
 
 ## 常用命令
 
