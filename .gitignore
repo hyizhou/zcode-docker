@@ -1,3 +1,11 @@
 *.deb
 workspace/
 .env
+compose.yaml
+compose.yml
+docker-compose.yaml
+docker-compose.yml
+compose.override.yaml
+compose.override.yml
+docker-compose.override.yaml
+docker-compose.override.yml

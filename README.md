@@ -29,9 +29,12 @@ Install Docker Engine and Docker Compose v2 first.
 ```bash
 git clone https://github.com/hyizhou/zcode-docker.git
 cd zcode-docker
+cp docker-compose.example.yml docker-compose.yml
 docker compose up -d --build
 docker compose logs -f zcode
 ```
+
+`docker-compose.yml` is a local configuration file and is ignored by Git. Adjust ports, volumes, or environment variables directly in it without conflicting with repository updates. The tracked `docker-compose.example.yml` file is the example configuration.
 
 On the first start, container logs show additional package installation, release-URL resolution, download progress, ZCode installation, and installer cleanup. The noVNC port becomes available after installation completes and the desktop services start.
 

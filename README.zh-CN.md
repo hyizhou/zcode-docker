@@ -29,9 +29,12 @@
 ```bash
 git clone https://github.com/hyizhou/zcode-docker.git
 cd zcode-docker
+cp docker-compose.example.yml docker-compose.yml
 docker compose up -d --build
 docker compose logs -f zcode
 ```
+
+`docker-compose.yml` 是本地配置文件，已被 Git 忽略；调整端口、volume 或环境变量时直接修改它，不会与仓库更新冲突。仓库中的 `docker-compose.example.yml` 是配置示例。
 
 首次启动的容器日志会显示额外软件包安装、解析下载地址、下载进度、安装和删除 ZCode 安装包的过程。noVNC 端口会在安装完成并启动桌面服务后可用。
 
