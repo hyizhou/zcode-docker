@@ -1,0 +1,1 @@
+/bin/bash /etc/s6-overlay/wait-socket.sh /run/user/1000/bus dbus-daemon

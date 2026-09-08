@@ -1,0 +1,7 @@
+#!/command/with-contenv bash
+# Provide the session D-Bus socket shared by the desktop services.
+
+exec /command/s6-setuidgid zcode /usr/bin/dbus-daemon \
+  --session \
+  --nofork \
+  --address=unix:path=/run/user/1000/bus

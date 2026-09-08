@@ -1,0 +1,18 @@
+#!/command/with-contenv bash
+# Expose the virtual display over VNC. VNC_ENABLED=0 keeps this service down,
+# for example after official remote-control pairing is complete.
+
+if [[ "${VNC_ENABLED:-1}" == "0" ]]; then
+  /command/s6-svc -d /run/s6-rc/servicedirs/x11vnc
+  exec /bin/sleep infinity
+fi
+
+exec /command/s6-setuidgid zcode env \
+  DISPLAY=:99 \
+  XDG_RUNTIME_DIR=/run/user/1000 \
+  x11vnc \
+    -display :99 \
+    -rfbport 5900 \
+    -rfbauth /data/.vnc/pass \
+    -shared -forever -noxdamage \
+    >/data/logs/x11vnc.log 2>&1

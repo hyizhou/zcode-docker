@@ -1,5 +1,7 @@
 *.deb
 workspace/
+init/*
+!init/*.example.sh
 .env
 compose.yaml
 compose.yml

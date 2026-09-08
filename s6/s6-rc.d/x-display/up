@@ -1,0 +1,1 @@
+/bin/bash /etc/s6-overlay/wait-socket.sh /tmp/.X11-unix/X99 Xvfb

@@ -1,0 +1,20 @@
+#!/command/with-contenv bash
+# Serve the noVNC web client and proxy WebSocket connections to VNC.
+# VNC_ENABLED=0 keeps this service down together with x11vnc.
+
+if [[ "${VNC_ENABLED:-1}" == "0" ]]; then
+  /command/s6-svc -d /run/s6-rc/servicedirs/novnc
+  exec /bin/sleep infinity
+fi
+
+for _ in $(seq 1 100); do
+  if (: < /dev/tcp/127.0.0.1/5900) 2>/dev/null; then
+    break
+  fi
+  sleep 0.1
+done
+
+exec /command/s6-setuidgid zcode /usr/bin/websockify \
+  --web /usr/share/novnc \
+  0.0.0.0:6080 \
+  127.0.0.1:5900 >/data/logs/novnc.log 2>&1

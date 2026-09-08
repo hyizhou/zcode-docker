@@ -1,0 +1,21 @@
+#!/command/with-contenv bash
+# Run ZCode Desktop as the unprivileged zcode user. s6 restarts this service
+# automatically if ZCode exits or crashes.
+
+sleep 2
+
+exec /command/s6-setuidgid zcode env \
+  HOME="${ZCODE_DESKTOP_HOME_DIR}" \
+  DISPLAY=:99 \
+  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+  XDG_RUNTIME_DIR=/run/user/1000 \
+  /opt/ZCode/zcode \
+  --disable-gpu \
+  --disable-dev-shm-usage \
+  --disable-background-timer-throttling \
+  --disable-backgrounding-occluded-windows \
+  --disable-renderer-backgrounding \
+  --no-first-run \
+  --window-size=1440,900 \
+  --no-sandbox \
+  --password-store=basic

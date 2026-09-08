@@ -9,17 +9,17 @@ services:
         APT_MIRROR_HOST: ${APT_MIRROR_HOST:-mirrors.cloud.tencent.com}
     image: zcode-webvnc:latest
     container_name: zcode-webvnc
-    init: true
     restart: unless-stopped
     shm_size: 512m
     environment:
       VNC_PASSWORD: zcode123
-      ZCODE_NO_SANDBOX: "1"
+      VNC_ENABLED: ${VNC_ENABLED:-1}
       EXTRA_APT_PACKAGES: ${EXTRA_APT_PACKAGES:-}
     ports:
       - "6080:6080"
     volumes:
       - zcode-data:/data
+      - ./init:/data/init
       - ./workspace:/workspace
 
 volumes:

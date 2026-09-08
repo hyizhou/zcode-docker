@@ -1,0 +1,9 @@
+#!/command/with-contenv bash
+# Run the window manager on the virtual display.
+
+exec /command/s6-setuidgid zcode env \
+  HOME="${ZCODE_DESKTOP_HOME_DIR}" \
+  DISPLAY=:99 \
+  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+  XDG_RUNTIME_DIR=/run/user/1000 \
+  openbox-session >/data/logs/openbox.log 2>&1

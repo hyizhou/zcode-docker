@@ -1,0 +1,12 @@
+#!/command/with-contenv bash
+# Provide the virtual X display used by the desktop services.
+
+rm -f /tmp/.X99-lock /tmp/.X11-unix/X99
+exec /command/s6-setuidgid zcode /usr/bin/Xvfb :99 \
+  -noreset \
+  -nolisten tcp \
+  -screen 0 1440x900x24 \
+  -dpi 96 \
+  +extension GLX \
+  +render \
+  -ac >/data/logs/xvfb.log 2>&1
